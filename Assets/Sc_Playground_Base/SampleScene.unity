@@ -119,6 +119,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &79307043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 79307044}
+  m_Layer: 0
+  m_Name: TitikA
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &79307044
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 79307043}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.1558, y: -0.2001, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &494450091 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6076126091978494335, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
@@ -570,8 +601,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.7584905, g: 0.035200644, b: 0, a: 1}
+  m_Sprite: {fileID: 1445040979522211589, guid: 58790ec0d0973a246a8604230929353e, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -589,8 +620,8 @@ Transform:
   m_GameObject: {fileID: 1600044923}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.52, y: 0.13, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -6.34, y: 1.5, z: 0}
+  m_LocalScale: {x: 0.044262383, y: 0.044262383, z: 0.044262383}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -607,12 +638,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9766ac88ee5ce342a62bb390171468c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuardAI
-  rotationSpeed: 50
+  moveSpeed: 3
+  waypoints:
+  - {fileID: 79307044}
+  - {fileID: 1860341045}
   viewDistance: 5
   playerLayer:
     serializedVersion: 2
     m_Bits: 1
   playerScript: {fileID: 494450091}
+--- !u!1 &1860341044
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1860341045}
+  m_Layer: 0
+  m_Name: TitikB
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1860341045
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1860341044}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.08055, y: -0.17132, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &638736436169572981 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4710988099450425920, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
@@ -630,6 +695,10 @@ PrefabInstance:
       propertyPath: m_UseAutoMass
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3572397936460048222, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -9212781744553796367, guid: bee9b5271049cf64581d3d0c8a34029f, type: 3}
     - target: {fileID: 4710988099450425920, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
       propertyPath: m_Name
       value: Player_Maling
@@ -639,12 +708,24 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5045469258371427831, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.08064018
+      objectReference: {fileID: 0}
+    - target: {fileID: 5045469258371427831, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.08064018
+      objectReference: {fileID: 0}
+    - target: {fileID: 5045469258371427831, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.08064018
+      objectReference: {fileID: 0}
+    - target: {fileID: 5045469258371427831, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1.27
       objectReference: {fileID: 0}
     - target: {fileID: 5045469258371427831, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.67
       objectReference: {fileID: 0}
     - target: {fileID: 5045469258371427831, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
       propertyPath: m_LocalPosition.z
@@ -724,7 +805,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 7.85, y: 13.09}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -741,3 +822,5 @@ SceneRoots:
   - {fileID: 6786090611989848579}
   - {fileID: 1600044925}
   - {fileID: 824011597}
+  - {fileID: 79307044}
+  - {fileID: 1860341045}
