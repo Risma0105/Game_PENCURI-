@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 50a2f927796b8b94d880548fa3f16310
+guid: 7e0df112fce05bb43a87ba8ccb305213
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8793639957104055765
-    second: idle_0
+      213: 7719156603016309020
+    second: maling_jalan_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: idle_0
+      name: maling_jalan_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 173
-        height: 225
+        width: 128
+        height: 183
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,20 +115,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5d55ed543f8490a70800000000000000
-      internalID: 8793639957104055765
+      spriteID: c19e5685804ff1b60800000000000000
+      internalID: 7719156603016309020
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: idle_1
+      name: maling_jalan_1
       rect:
         serializedVersion: 2
-        x: 173
+        x: 128
         y: 0
-        width: 173
-        height: 225
+        width: 128
+        height: 183
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c7f1ebb3f4ab83c4eb207dc883702113
-      internalID: 1583661821
+      spriteID: a7d57fd764dea9949b3fecb46db512de
+      internalID: -1608866065
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: idle_2
+      name: maling_jalan_2
       rect:
         serializedVersion: 2
-        x: 346
+        x: 256
         y: 0
-        width: 173
-        height: 225
+        width: 128
+        height: 183
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,20 +159,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e2d66dacd57587e41a5446fa2481c4ac
-      internalID: 1904229012
+      spriteID: fa802f82f8129e54b82436a6250db77b
+      internalID: 1696857561
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: idle_3
+      name: maling_jalan_3
       rect:
         serializedVersion: 2
-        x: 519
+        x: 384
         y: 0
-        width: 173
-        height: 225
+        width: 128
+        height: 183
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,20 +181,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4b35a33376446c74f8105a65bad92088
-      internalID: -900107037
+      spriteID: b3d420c62d532aa4dbdb5fbd2bd213ff
+      internalID: -1275300906
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: idle_4
+      name: maling_jalan_4
       rect:
         serializedVersion: 2
-        x: 692
+        x: 512
         y: 0
-        width: 173
-        height: 225
+        width: 128
+        height: 183
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,20 +203,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b624aa5a9c938af4490f418146920472
-      internalID: 1165573206
+      spriteID: 50a2e27c0df3bf74fb8965a462425d10
+      internalID: 284449372
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: idle_5
+      name: maling_jalan_5
       rect:
         serializedVersion: 2
-        x: 865
+        x: 640
         y: 0
-        width: 173
-        height: 225
+        width: 128
+        height: 183
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -225,20 +225,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e9f5acc9da8af0b48aa370817276292e
-      internalID: 985526140
+      spriteID: 3a735268fa38b5944afeab1c06d06313
+      internalID: 208310940
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: idle_6
+      name: maling_jalan_6
       rect:
         serializedVersion: 2
-        x: 1038
+        x: 768
         y: 0
-        width: 173
-        height: 225
+        width: 128
+        height: 183
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -247,20 +247,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2521baf49427b364d895a28780ed9e7f
-      internalID: 1753932426
+      spriteID: 5e276b295b5dedd4ab57221c80077fdc
+      internalID: 1242216494
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: idle_7
+      name: maling_jalan_7
       rect:
         serializedVersion: 2
-        x: 1211
+        x: 896
         y: 0
-        width: 173
-        height: 225
+        width: 128
+        height: 183
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -269,8 +269,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2aa15b68e26dfc9438d833c158d793ba
-      internalID: 1723520478
+      spriteID: 58fa3ac54905aab409a9636ffae991bf
+      internalID: 1439525602
       vertices: []
       indices: 
       edges: []
@@ -279,7 +279,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 25ea63ddb2e5a6d4b9e0cb7ef07efbd3
+    spriteID: 4ed1a2ff58db9de4a9b42f29a11a7a37
     internalID: 0
     vertices: []
     indices: 
@@ -289,16 +289,16 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":173.0,"y":225.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":128.0,"y":183.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      idle_0: 8793639957104055765
-      idle_1: 1583661821
-      idle_2: 1904229012
-      idle_3: -900107037
-      idle_4: 1165573206
-      idle_5: 985526140
-      idle_6: 1753932426
-      idle_7: 1723520478
+      maling_jalan_0: 7719156603016309020
+      maling_jalan_1: -1608866065
+      maling_jalan_2: 1696857561
+      maling_jalan_3: -1275300906
+      maling_jalan_4: 284449372
+      maling_jalan_5: 208310940
+      maling_jalan_6: 1242216494
+      maling_jalan_7: 1439525602
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

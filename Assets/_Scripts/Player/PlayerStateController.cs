@@ -16,55 +16,55 @@ public class PlayerStateController : MonoBehaviour
 
     [Header("Visual & Material Settings")]
     public Material defaultMaterial;   // Seret material standar (Sprite-Lit-Default) ke sini
-    public Material crystalMaterial;   // Seret material kristal/es kamu ke sini[cite: 1]
+    public Material crystalMaterial;   // Seret material kristal/es kamu ke sini
     
     private SpriteRenderer sr;
-    private Animator anim; // Komponen untuk memicu animasi lari di Unity[cite: 1]
+    private Animator anim; // Komponen untuk memicu animasi di Unity
 
     void Start() {
         sr = GetComponent<SpriteRenderer>();
-        anim = GetComponent<Animator>(); // Mengambil komponen Animator otomatis saat game mulai[cite: 1]
+        anim = GetComponent<Animator>(); // Mengambil komponen Animator otomatis saat game mulai
 
-        // Menangkap material default otomatis kalau slotnya kosong[cite: 1]
+        // Menangkap material default otomatis kalau slotnya kosong
         if (defaultMaterial == null && sr != null) {
             defaultMaterial = sr.material;
         }
     }
 
     void Update() {
-        // Input ganti wujud menggunakan tombol E[cite: 1]
+        // Input ganti wujud menggunakan tombol E
         if (Input.GetKeyDown(KeyCode.E)) {
             ToggleState();
         }
 
-        // Aktifkan/Matikan lari otomatis menggunakan tombol R (Hanya saat jadi Maling)[cite: 1]
+        // Aktifkan/Matikan lari otomatis menggunakan tombol R (Hanya saat jadi Maling)
         if (currentStatus == State.Maling && Input.GetKeyDown(KeyCode.R)) {
             if (stamina > 0) {
-                SetSprintState(!isSprinting); // Panggil fungsi ganti status lari & animasi[cite: 1]
+                SetSprintState(!isSprinting); // Panggil fungsi ganti status lari & animasi
             }
         }
 
-        // Hanya bisa gerak kalau statusnya Maling[cite: 1]
+        // Hanya bisa gerak kalau statusnya Maling
         if (currentStatus == State.Maling) {
             HandleMovement();
         }
     }
 
-    // FUNGSI BARU: Untuk mengatur animasi dan material saat tombol R ditekan[cite: 1]
+    // Mengatur animasi dan material saat tombol R ditekan atau saat stamina habis
     void SetSprintState(bool sprint) {
         isSprinting = sprint;
 
-        // Picu parameter isSprinting di Animator Unity biar animasinya berubah lari/idle[cite: 1]
+        // Picu parameter isSprinting di Animator Unity
         if (anim != null) {
             anim.SetBool("isSprinting", isSprinting);
         }
 
-        // Logika ganti material kristal secara real-time[cite: 1]
+        // Logika ganti material kristal secara real-time
         if (sr != null) {
             if (isSprinting) {
-                sr.material = crystalMaterial; // Berubah jadi material kristal/es saat lari[cite: 1]
+                sr.material = crystalMaterial; // Berubah jadi material kristal/es saat lari
             } else {
-                sr.material = defaultMaterial; // Kembali ke material normal saat diam[cite: 1]
+                sr.material = defaultMaterial; // Kembali ke material normal saat diam
             }
         }
     }
@@ -72,58 +72,76 @@ public class PlayerStateController : MonoBehaviour
     void ToggleState() {
         if (currentStatus == State.Maling) {
             currentStatus = State.Patung;
-            SetSprintState(false); // Otomatis batal lari & balikin material ke normal kalau jadi patung[cite: 1]
+            SetSprintState(false); // Otomatis batal lari & balikin material ke normal kalau jadi patung
             sr.color = Color.gray; 
 
             // ====================================================================
-            // INTEGRASI UI: Efek layar merah langsung mati otomatis saat jadi patung[cite: 1]
+            // INTEGRASI UI: Efek layar merah langsung mati otomatis saat jadi patung
             // ====================================================================
             if (GameUIManager.Instance != null) {
                 GameUIManager.Instance.SetAlertState(false);
             }
             // ====================================================================
 
-            Debug.Log("Status: Jadi Patung (Aman dari AI)[cite: 1]");
+            Debug.Log("Status: Jadi Patung (Aman dari AI)");
         } else {
             currentStatus = State.Maling;
             sr.color = Color.white;
-            Debug.Log("Status: Jadi Maling (Bisa Gerak)[cite: 1]");
+            Debug.Log("Status: Jadi Maling (Bisa Gerak)");
         }
     }
 
     void HandleMovement() {
-        // Mengambil input WASD / Arrow Keys[cite: 1]
+        // Mengambil input WASD / Arrow Keys
         float h = Input.GetAxisRaw("Horizontal"); 
         float v = Input.GetAxisRaw("Vertical");
         
         Vector3 move = new Vector3(h, v, 0).normalized;
 
-        // Logika Pengurangan & Pemulihan Stamina[cite: 1]
+        // ====================================================================
+        // INTEGRASI ANIMASI JALAN & FLIP HADAP KANAN/KIRI AUTOMATIS
+        // ====================================================================
+        if (anim != null) {
+            // Jika ada input gerakan, nyalakan animasi jalan biasa
+            if (move.magnitude > 0 && !isSprinting) {
+                anim.SetBool("isWalking", true);
+            } else {
+                anim.SetBool("isWalking", false);
+            }
+        }
+
+        // LOGIKA FLIP BADAN:
+        if (sr != null) {
+            // Jika h > 0 (pencet D / gerak ke kanan), mukanya normal (hadap kanan)
+            if (h > 0) {
+                sr.flipX = false;
+            }
+            // Jika h < 0 (pencet W/A/gerak ke kiri), balik gambarnya biar hadap kiri
+            else if (h < 0) {
+                sr.flipX = true;
+            }
+        }
+        // ====================================================================
+
+        // Logika Pengurangan & Pemulihan Stamina
         if (isSprinting) {
-            // Jika stamina habis, otomatis berhenti sprint[cite: 1]
             if (stamina > 0) {
                 stamina -= Time.deltaTime; 
             } else {
-                SetSprintState(false); // Stamina habis, panggil fungsi untuk reset animasi & material[cite: 1]
+                SetSprintState(false); 
             }
         } else {
-            // Pemulihan stamina saat tidak lari[cite: 1]
             if (stamina < maxStamina) {
                 stamina += Time.deltaTime * 0.5f; 
             }
         }
 
-        // Pastikan stamina tidak minus atau melebihi batas[cite: 1]
         stamina = Mathf.Clamp(stamina, 0, maxStamina);
-
-        // Tentukan kecepatan berdasarkan status sprint[cite: 1]
         float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
 
-        // JIKA sedang sprint, karakter akan otomatis lari ke arah depan[cite: 1]
         if (isSprinting && move.magnitude == 0) {
             transform.position += Vector3.right * currentSpeed * Time.deltaTime;
         } else {
-            // Pergerakan manual biasa menggunakan WASD[cite: 1]
             transform.position += move * currentSpeed * Time.deltaTime;
         }
     }

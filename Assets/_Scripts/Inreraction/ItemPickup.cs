@@ -11,15 +11,20 @@ public class ItemPickup : MonoBehaviour
         // DAN mengecek apakah tombol Space ditekan menggunakan New Input System
         if (other.CompareTag("Player") && Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-
             if (dataLukisan != null)
             {
-                // Masukkan barang ke Inventory
+                // 1. Masukkan barang ke Inventory Humayra
                 InventoryManager.Instance.TambahKeInventory(dataLukisan);
                 Debug.Log("Berhasil mencuri: " + dataLukisan.namaLukisan);
             }
 
-            // Hancurkan barang dari scene
+            // 2. KODE GABUNGAN: Panggil UIManager milik Risma untuk memunculkan panel bintang
+            if (GameUIManager.Instance != null)
+            {
+                GameUIManager.Instance.LevelCompleted();
+            }
+
+            // 3. Hancurkan barang dari scene
             Destroy(gameObject);
         }
     }

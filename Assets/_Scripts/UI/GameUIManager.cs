@@ -13,10 +13,6 @@ public class GameUIManager : MonoBehaviour
     private bool isTimerRunning = false;
 
     [Header("Star Scoring Settings (In Seconds)")]
-    // 1-3 Menit logika bintang:
-    // Bintang 3: < 1 menit (60 detik)
-    // Bintang 2: 1 - 2 menit (60 - 120 detik)
-    // Bintang 1: 2 - 3 menit (120 - 180 detik)
     [SerializeField] private float threeStarsLimit = 60f;
     [SerializeField] private float twoStarsLimit = 120f;
     [SerializeField] private float maxTimeLimit = 180f; // 3 Menit maks
@@ -45,7 +41,6 @@ public class GameUIManager : MonoBehaviour
         StartTimer();
         if (alertOverlay != null)
         {
-            // Pastikan overlay merah transparan di awal game
             Color c = alertOverlay.color;
             c.a = 0f;
             alertOverlay.color = c;
@@ -60,7 +55,6 @@ public class GameUIManager : MonoBehaviour
             elapsedTime += Time.deltaTime;
             UpdateTimerDisplay();
 
-            // Opsional: Jika waktu lewat dari 3 menit (180 detik), game over otomatis
             if (elapsedTime >= maxTimeLimit)
             {
                 StopTimer();
@@ -75,14 +69,16 @@ public class GameUIManager : MonoBehaviour
 
     private void UpdateTimerDisplay()
     {
-        int minutes = Mathf.FloorToInt(elapsedTime / 60f);
-        int seconds = Mathf.FloorToInt(elapsedTime % 60f);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        if (timerText != null)
+        {
+            int minutes = Mathf.FloorToInt(elapsedTime / 60f);
+            int seconds = Mathf.FloorToInt(elapsedTime % 60f);
+            timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        }
     }
     #endregion
 
     #region ALERT SCREEN EFFECT (VIGNETTE RED)
-    // Panggil fungsi ini jika status pemain "Ketahuan" oleh Penjaga
     public void SetAlertState(bool active)
     {
         if (isAlertActive == active) return;
@@ -96,20 +92,20 @@ public class GameUIManager : MonoBehaviour
         else
         {
             if (alertCoroutine != null) StopCoroutine(alertCoroutine);
-            // Kembalikan ke transparan
-            Color c = alertOverlay.color;
-            c.a = 0f;
-            alertOverlay.color = c;
+            if (alertOverlay != null)
+            {
+                Color c = alertOverlay.color;
+                c.a = 0f;
+                alertOverlay.color = c;
+            }
         }
     }
 
     private IEnumerator PulseAlertEffect()
     {
-        while (isAlertActive)
+        while (isAlertActive && alertOverlay != null)
         {
-            // Efek berkedip (pulsing) memanfaatkan fungsi Sinus
             float alpha = (Mathf.Sin(Time.time * pulseSpeed) + 1f) / 2f; 
-            // Batasi alpha maksimal 0.4f agar tidak terlalu menutupi layar game
             alpha = Mathf.Clamp(alpha, 0f, 0.4f); 
 
             Color c = alertOverlay.color;
@@ -121,15 +117,27 @@ public class GameUIManager : MonoBehaviour
     #endregion
 
     #region WIN & SCORING LOGIC
-    // Panggil fungsi ini saat Maling menyentuh Pintu Exit setelah mengambil semua lukisan
     public void LevelCompleted()
     {
         StopTimer();
-        if (scorePanel != null) scorePanel.SetActive(true);
+        
+        // PENGAMAN 1: Nyalakan panel skor jika tidak kosong
+        if (scorePanel != null) 
+        {
+            scorePanel.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("Score Panel belum di-drag ke dalam _UIManager di Inspector!");
+        }
 
-        int minutes = Mathf.FloorToInt(elapsedTime / 60f);
-        int seconds = Mathf.FloorToInt(elapsedTime % 60f);
-        finalTimeText.text = "Waktu: " + string.Format("{0:00}:{1:00}", minutes, seconds);
+        // PENGAMAN 2: Update teks waktu final
+        if (finalTimeText != null)
+        {
+            int minutes = Mathf.FloorToInt(elapsedTime / 60f);
+            int seconds = Mathf.FloorToInt(elapsedTime % 60f);
+            finalTimeText.text = "Waktu: " + string.Format("{0:00}:{1:00}", minutes, seconds);
+        }
 
         int starsEarned = CalculateStars();
         DisplayStars(starsEarned);
@@ -137,27 +145,40 @@ public class GameUIManager : MonoBehaviour
 
     private int CalculateStars()
     {
-        if (elapsedTime <= threeStarsLimit) return 3;       // Di bawah 1 Menit
-        else if (elapsedTime <= twoStarsLimit) return 2;     // 1 - 2 Menit
-        else if (elapsedTime <= maxTimeLimit) return 1;      // 2 - 3 Menit
-        else return 0;                                       // Lebih dari 3 Menit
+        if (elapsedTime <= threeStarsLimit) return 3;       
+        else if (elapsedTime <= twoStarsLimit) return 2;     
+        else if (elapsedTime <= maxTimeLimit) return 1;      
+        else return 0;                                       
     }
 
     private void DisplayStars(int starsCount)
     {
+        // PENGAMAN 3: Memastikan array bintang tidak kosong dan komponen gambarnya ada
+        if (starImages == null || starImages.Length == 0)
+        {
+            Debug.LogWarning("Star Images array kosong! Harap masukkan object Star_1, Star_2, Star_3 ke Inspector.");
+            return;
+        }
+
         for (int i = 0; i < starImages.Length; i++)
         {
-            if (i < starsCount)
-                starImages[i].sprite = fullStarSprite;
-            else
-                starImages[i].sprite = emptyStarSprite;
+            if (starImages[i] != null)
+            {
+                if (i < starsCount)
+                {
+                    if (fullStarSprite != null) starImages[i].sprite = fullStarSprite;
+                }
+                else
+                {
+                    if (emptyStarSprite != null) starImages[i].sprite = emptyStarSprite;
+                }
+            }
         }
     }
 
     private void TriggerGameOver()
     {
         Debug.Log("Waktu habis! Misi Gagal.");
-        // Hubungkan ke sistem Game Over timmu di sini
     }
     #endregion
 }
