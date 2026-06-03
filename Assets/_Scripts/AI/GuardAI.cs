@@ -1,8 +1,13 @@
 using UnityEngine;
 
 public class GuardAI : MonoBehaviour {
+    public enum GuardState { Patroli, Mengejar }
+    [Header("AI State")]
+    public GuardState currentGuardState = GuardState.Patroli;
+
     [Header("Patrol Settings")]
-    public float moveSpeed = 2f;          // Kecepatan jalan hansip
+    public float moveSpeed = 2f;          // Kecepatan jalan biasa saat patroli
+    public float chaseSpeed = 4.5f;       // Kecepatan lari saat ngejar maling
     public Transform[] waypoints;         // Titik-titik tujuan keliling
     private int currentWaypointIndex = 0; // Target titik saat ini
 
@@ -11,69 +16,68 @@ public class GuardAI : MonoBehaviour {
     public LayerMask playerLayer;
     public PlayerStateController playerScript;
 
-    // Tambahkan ini untuk mengatur arah hadap gambar Hansip
     private SpriteRenderer spriteRenderer; 
-    private Vector2 arahHadapSenter = Vector2.right; // Menampung arah senter (kanan/kiri)
+    private Vector2 arahHadapSenter = Vector2.right; 
+    private bool isPlayerSpotted = false;  // Status apakah player masuk raycast saat itu
 
     void Start() {
-        // Mengambil komponen SpriteRenderer yang ada di objek Hansip
         spriteRenderer = GetComponent<SpriteRenderer>();
+        
+        if (playerScript == null) {
+            playerScript = FindFirstObjectByType<PlayerStateController>();
+        }
     }
 
     void Update() {
-        // 1. LOGIKA KELILING (PATROLI)
-        if (waypoints.Length > 0) {
-            Patroli();
-        }
-
-        // 2. LOGIKA SENTER (RAYCAST)
-        // Sekarang menembak sesuai dengan arahHadapSenter (bukan transform.right lagi)
+        // 1. LOGIKA SENTER (RAYCAST DETEKSI)
         RaycastHit2D hit = Physics2D.Raycast(transform.position, arahHadapSenter, viewDistance, playerLayer);
         
         if (hit.collider != null) {
+            // Cek status player dari script-mu
             if (playerScript.currentStatus == PlayerStateController.State.Maling) {
-                // ====================================================================
-                // INTEGRASI UI: Menyalakan efek layar merah berkedip (Alert)
-                // ====================================================================
+                isPlayerSpotted = true;
+                currentGuardState = GuardState.Mengejar; // Otomatis berubah jadi ngejar!
+
                 if (GameUIManager.Instance != null) {
                     GameUIManager.Instance.SetAlertState(true);
                 }
-                // ====================================================================
-
-                Debug.Log("KETAHUAN! Misi Gagal.");
             } else {
-                Debug.Log("Hanya patung biasa..."); 
+                // Kalau nemu player tapi statusnya Patung, Hansip anggap itu benda mati
+                isPlayerSpotted = false; 
             }
         }
         else {
-            // ====================================================================
-            // INTEGRASI UI: Mematikan efek layar merah jika tidak ada objek terdeteksi
-            // ====================================================================
+            isPlayerSpotted = false;
+        }
+
+        // Jika player merubah wujudnya jadi patung SAAT dikejar, Hansip kehilangan jejak
+        if (currentGuardState == GuardState.Mengejar && playerScript.currentStatus == PlayerStateController.State.Patung) {
+            currentGuardState = GuardState.Patroli; // Balik patroli lagi
+
             if (GameUIManager.Instance != null) {
                 GameUIManager.Instance.SetAlertState(false);
             }
-            // ====================================================================
+        }
+
+        // 2. LOGIKA PERGERAKAN BERDASARKAN STATE HANSIP
+        if (currentGuardState == GuardState.Mengejar) {
+            KejarMaling();
+        } else {
+            if (waypoints.Length > 0) {
+                Patroli();
+            }
         }
     }
 
     void Patroli() {
         Transform targetWaypoint = waypoints[currentWaypointIndex];
 
-        // Gerakkan hansip menuju titik target
+        // Gerakkan hansip menuju titik target (pakai moveSpeed biasa)
         transform.position = Vector2.MoveTowards(transform.position, targetWaypoint.position, moveSpeed * Time.deltaTime);
 
-        // Hitung arah jalan
+        // Hitung arah jalan & balik sprite
         Vector2 arahJalan = (targetWaypoint.position - transform.position).normalized;
-
-        // Cek arah jalan untuk membalik sprite (Hanya merubah arah X)
-        if (arahJalan.x > 0.05f) {
-            spriteRenderer.flipX = false;    // Hadap kanan (sesuai gambar asli)
-            arahHadapSenter = Vector2.right; // Senter nembak ke kanan
-        } 
-        else if (arahJalan.x < -0.05f) {
-            spriteRenderer.flipX = true;     // Hadap kiri (gambar dibalik otomatis oleh Unity)
-            arahHadapSenter = Vector2.left;  // Senter nembak ke kiri
-        }
+        AturArahHadap(arahJalan);
 
         // Jika sudah sampai di titik target, ganti ke titik berikutnya
         if (Vector2.Distance(transform.position, targetWaypoint.position) < 0.1f) {
@@ -81,10 +85,32 @@ public class GuardAI : MonoBehaviour {
         }
     }
 
-    // Visualisasi jangkauan senter di Scene View Unity
+    void KejarMaling() {
+        if (playerScript == null) return;
+
+        // Gerakkan hansip menuju posisi koordinat Player saat ini (pakai chaseSpeed)
+        transform.position = Vector2.MoveTowards(transform.position, playerScript.transform.position, chaseSpeed * Time.deltaTime);
+
+        // Hitung arah lari menuju player agar senter dan spritenya selalu menghadap player
+        Vector2 arahKePlayer = (playerScript.transform.position - transform.position).normalized;
+        AturArahHadap(arahKePlayer);
+    }
+
+    // Fungsi pembantu untuk membalik arah sprite dan arah raycast senter
+    void AturArahHadap(Vector2 arah) {
+        if (arah.x > 0.05f) {
+            spriteRenderer.flipX = false;    // Hadap kanan
+            arahHadapSenter = Vector2.right; 
+        } 
+        else if (arah.x < -0.05f) {
+            spriteRenderer.flipX = true;     // Hadap kiri
+            arahHadapSenter = Vector2.left;  
+        }
+    }
+
     void OnDrawGizmos() {
-        Gizmos.color = Color.red;
-        // Menggunakan arahHadapSenter agar garis merah di Unity Editor juga ikut berbalik arah
+        // Mengubah warna garis editor: Merah kalau ngejar, Kuning kalau patroli biasa
+        Gizmos.color = (currentGuardState == GuardState.Mengejar) ? Color.red : Color.yellow;
         Vector3 arahGaris = Application.isPlaying ? (Vector3)arahHadapSenter : transform.right;
         Gizmos.DrawRay(transform.position, arahGaris * viewDistance);
     }
