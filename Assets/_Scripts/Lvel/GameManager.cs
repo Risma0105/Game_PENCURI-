@@ -18,6 +18,12 @@ public class May_GameManager : MonoBehaviour
     [SerializeField]
     private GameObject finishDoor;
 
+    [SerializeField]
+private GameObject patung;
+
+[SerializeField]
+private GameObject berlian;
+
     void Start()
     {
         int selectedLevel =
@@ -31,30 +37,42 @@ public class May_GameManager : MonoBehaviour
 
     void LoadLevel(LevelData levelData)
 {
-    Debug.Log(
-        "Objective: " +
-        levelData.objectiveItem
-    );
+    Debug.Log("Level Name: " +
+        levelData.levelName);
 
-    // Reset object
+    // Reset semua object
     lukisan.SetActive(false);
+    patung.SetActive(false);
+    berlian.SetActive(false);
     keyObject.SetActive(false);
 
+    // Semua level punya pintu keluar
     finishDoor.SetActive(true);
 
-    if(levelData.objectiveItem
-        == "Lukisan")
+    // Objective Item
+    if (levelData.objectiveItem == "Lukisan")
     {
         lukisan.SetActive(true);
     }
+    else if (levelData.objectiveItem == "Patung")
+    {
+        patung.SetActive(true);
+    }
+    else if (levelData.objectiveItem == "Berlian")
+    {
+        berlian.SetActive(true);
+    }
 
-    if(levelData.requiresKey)
+    // Sistem kunci
+    if (levelData.requiresKey)
     {
         keyObject.SetActive(true);
 
-        Debug.Log(
-            "Door is LOCKED"
-        );
+        Debug.Log("Door is LOCKED");
+    }
+    else
+    {
+        Debug.Log("Door is OPEN");
     }
 }
 }
