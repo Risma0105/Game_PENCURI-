@@ -9,6 +9,7 @@ public class May_LevelSelect : MonoBehaviour
 
     private void Start()
     {
+      
         int unlockedLevel =
             PlayerPrefs.GetInt("UnlockedLevel", 1);
 
@@ -36,4 +37,14 @@ public class May_LevelSelect : MonoBehaviour
         PlayerPrefs.SetInt("CurrentLevel", 3);
         SceneManager.LoadScene("GamePlay");
     }
+
+    public void ResetProgress()
+{
+    PlayerPrefs.DeleteAll();
+
+    btnMap2.interactable = false;
+    btnMap3.interactable = false;
+
+    Debug.Log("Progress berhasil direset!");
+}
 }

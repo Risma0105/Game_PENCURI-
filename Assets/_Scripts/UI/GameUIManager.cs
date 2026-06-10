@@ -38,6 +38,9 @@ public class GameUIManager : MonoBehaviour
 
     private void Start()
     {
+        GameState.keyCollected = false;
+        GameState.objectiveCollected = false;
+
         StartTimer();
         if (alertOverlay != null)
         {

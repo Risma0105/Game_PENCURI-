@@ -19,7 +19,17 @@ public class ItemPickup : MonoBehaviour
                           dataLukisan.namaLukisan);
             }
 
-            GameState.objectiveCollected = true;
+            if (dataLukisan != null)
+{
+    if (dataLukisan.namaLukisan == "Kunci")
+    {
+        GameState.keyCollected = true;
+    }
+    else
+    {
+        GameState.objectiveCollected = true;
+    }
+}
 
             Debug.Log("Objective berhasil dicuri!");
 
