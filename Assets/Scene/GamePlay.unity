@@ -939,7 +939,7 @@ GameObject:
   - component: {fileID: 577771028}
   - component: {fileID: 577771029}
   m_Layer: 0
-  m_Name: Objek_Lukisan
+  m_Name: Lukisan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2056,6 +2056,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80731db9fad3ff24192ff42755fb5021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::May_GameManager
+  levels:
+  - {fileID: 11400000, guid: b5f409195d54a3a4c82d4c06baad5d6c, type: 2}
+  - {fileID: 11400000, guid: 83deb744b1c6e0740b31aaa4e98c39d3, type: 2}
+  - {fileID: 11400000, guid: 9072f823afb4a1a45805f6609f18a09f, type: 2}
+  lukisan: {fileID: 577771025}
+  keyObject: {fileID: 291131765}
+  finishDoor: {fileID: 533197034}
 --- !u!1 &1709240602
 GameObject:
   m_ObjectHideFlags: 0
