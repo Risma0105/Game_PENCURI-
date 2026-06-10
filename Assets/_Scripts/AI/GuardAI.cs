@@ -1,115 +1,168 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class GuardAI : MonoBehaviour {
-    public enum GuardState { Patroli, Mengejar }
+    public enum GuardState { Patroli, Idle, Mengejar }
     [Header("AI State")]
     public GuardState currentGuardState = GuardState.Patroli;
 
-    [Header("Patrol Settings")]
-    public float moveSpeed = 2f;          // Kecepatan jalan biasa saat patroli
-    public float chaseSpeed = 4.5f;       // Kecepatan lari saat ngejar maling
-    public Transform[] waypoints;         // Titik-titik tujuan keliling
-    private int currentWaypointIndex = 0; // Target titik saat ini
+    [Header("Movement Settings (Follow Path)")]
+    public float moveSpeed = 2f;       
+    public float chaseSpeed = 4f;    
+    
+    [Header("Idle Settings")]
+    public float idleDuration = 1.5f;       
+    private bool isWaiting = false;       
 
     [Header("Vision Settings")]
     public float viewDistance = 5f;
     public LayerMask playerLayer;
     public PlayerStateController playerScript;
 
+    [Header("Layer Path (Ubin Ungu)")]
+    public LayerMask pathLayer; // <--- HANSIP HANYA BOLEH JALAN DI LAYER INI
+
     private SpriteRenderer spriteRenderer; 
     private Vector2 arahHadapSenter = Vector2.right; 
-    private bool isPlayerSpotted = false;  // Status apakah player masuk raycast saat itu
+    private Vector2 arahJalanSekarang = Vector2.right;
+    private Animator animator; 
+    private Rigidbody2D rb;
 
     void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>(); 
+        rb = GetComponent<Rigidbody2D>();
         
+        if (rb == null) rb = gameObject.AddComponent<Rigidbody2D>();
+        
+        // Kunci fisik murni biar gak mental-mental
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
         if (playerScript == null) {
             playerScript = FindFirstObjectByType<PlayerStateController>();
         }
+
+        // Cari arah ubin ungu pertama untuk jalan
+        CariArahUbinUngu();
     }
 
     void Update() {
-        // 1. LOGIKA SENTER (RAYCAST DETEKSI)
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, arahHadapSenter, viewDistance, playerLayer);
+        // DETEKSI SENTER KE MALING (PAPASAN = ALERT MERAH)
+        RaycastHit2D hitPlayer = Physics2D.Raycast(transform.position, arahHadapSenter, viewDistance, playerLayer);
         
-        if (hit.collider != null) {
-            // Cek status player dari script-mu
-            if (playerScript.currentStatus == PlayerStateController.State.Maling) {
-                isPlayerSpotted = true;
-                currentGuardState = GuardState.Mengejar; // Otomatis berubah jadi ngejar!
-
-                if (GameUIManager.Instance != null) {
-                    GameUIManager.Instance.SetAlertState(true);
+        if (hitPlayer.collider != null && hitPlayer.collider.gameObject.CompareTag("Player")) {
+            if (playerScript != null && playerScript.currentStatus == PlayerStateController.State.Maling) {
+                if (isWaiting) {
+                    StopAllCoroutines();
+                    isWaiting = false;
                 }
-            } else {
-                // Kalau nemu player tapi statusnya Patung, Hansip anggap itu benda mati
-                isPlayerSpotted = false; 
-            }
-        }
-        else {
-            isPlayerSpotted = false;
-        }
-
-        // Jika player merubah wujudnya jadi patung SAAT dikejar, Hansip kehilangan jejak
-        if (currentGuardState == GuardState.Mengejar && playerScript.currentStatus == PlayerStateController.State.Patung) {
-            currentGuardState = GuardState.Patroli; // Balik patroli lagi
-
-            if (GameUIManager.Instance != null) {
-                GameUIManager.Instance.SetAlertState(false);
+                currentGuardState = GuardState.Mengejar; 
+                if (GameUIManager.Instance != null) GameUIManager.Instance.SetAlertState(true);
             }
         }
 
-        // 2. LOGIKA PERGERAKAN BERDASARKAN STATE HANSIP
-        if (currentGuardState == GuardState.Mengejar) {
-            KejarMaling();
-        } else {
-            if (waypoints.Length > 0) {
-                Patroli();
-            }
+        // JIKA MALING JADI PATUNG = ALERT MATI, KEMBALI PATROLI
+        if (currentGuardState == GuardState.Mengejar && playerScript != null && playerScript.currentStatus == PlayerStateController.State.Patung) {
+            currentGuardState = GuardState.Patroli; 
+            if (GameUIManager.Instance != null) GameUIManager.Instance.SetAlertState(false);
+            CariArahUbinUngu();
         }
     }
 
-    void Patroli() {
-        Transform targetWaypoint = waypoints[currentWaypointIndex];
-
-        // Gerakkan hansip menuju titik target (pakai moveSpeed biasa)
-        transform.position = Vector2.MoveTowards(transform.position, targetWaypoint.position, moveSpeed * Time.deltaTime);
-
-        // Hitung arah jalan & balik sprite
-        Vector2 arahJalan = (targetWaypoint.position - transform.position).normalized;
-        AturArahHadap(arahJalan);
-
-        // Jika sudah sampai di titik target, ganti ke titik berikutnya
-        if (Vector2.Distance(transform.position, targetWaypoint.position) < 0.1f) {
-            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+    void FixedUpdate() {
+        if (currentGuardState == GuardState.Mengejar) {
+            KejarMaling();
+        } 
+        else if (currentGuardState == GuardState.Patroli && !isWaiting) {
+            PatroliIkutJalanUngu();
         }
+    }
+
+    void PatroliIkutJalanUngu() {
+        if (animator != null) animator.SetBool("isWalking", true);
+
+        // Cek ubin di depan posisi hansip (jarak 0.8f)
+        Vector2 posisiCek = (Vector2)transform.position + arahJalanSekarang * 0.8f;
+        Collider2D hitPath = Physics2D.OverlapPoint(posisiCek, pathLayer);
+
+        // Jika di depan BUKAN ubin ungu (artinya ketemu dinding abu-abu atau ujung pink), hansip harus belok!
+        if (hitPath == null) {
+            StartCoroutine(TungguDanBelok());
+            return;
+        }
+
+        // Jika jalan aman, maju terus mengikuti jalur ubin ungu
+        Vector2 posisiBaru = rb.position + arahJalanSekarang * moveSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(posisiBaru);
+        AturArahHadap(arahJalanSekarang);
+    }
+
+    IEnumerator TungguDanBelok() {
+        isWaiting = true;
+        if (animator != null) animator.SetBool("isWalking", false);
+
+        yield return new WaitForSeconds(idleDuration);
+
+        CariArahUbinUngu();
+        isWaiting = false;
+    }
+
+    void CariArahUbinUngu() {
+        Vector2[] empatArah = { Vector2.right, Vector2.left, Vector2.up, Vector2.down };
+        List<Vector2> arahTersedia = new List<Vector2>();
+
+        // Scan otomatis ke 4 arah mata angin, cari mana yang ada ubin ungunya
+        foreach (Vector2 arah in empatArah) {
+            Vector2 titikTarget = (Vector2)transform.position + arah * 1.0f;
+            Collider2D hit = Physics2D.OverlapPoint(titikTarget, pathLayer);
+            
+            if (hit != null) {
+                arahTersedia.Add(arah);
+            }
+        }
+
+        if (arahTersedia.Count > 0) {
+            // Biar gak bolak-balik pusing di tempat, prioritaskan jangan langsung putar balik ke belakang
+            Vector2 arahMundur = -arahJalanSekarang;
+            if (arahTersedia.Count > 1 && arahTersedia.Contains(arahMundur)) {
+                arahTersedia.Remove(arahMundur);
+            }
+            // Pilih jalan ungu yang tersedia secara otomatis
+            arahJalanSekarang = arahTersedia[Random.Range(0, arahTersedia.Count)];
+        } else {
+            // Kalau benar-benar buntu terpaksa balik kanan bubar jalan
+            arahJalanSekarang = -arahJalanSekarang;
+        }
+
+        AturArahHadap(arahJalanSekarang);
     }
 
     void KejarMaling() {
-        if (playerScript == null) return;
+        if (playerScript == null || rb == null) return;
+        if (animator != null) animator.SetBool("isWalking", true);
 
-        // Gerakkan hansip menuju posisi koordinat Player saat ini (pakai chaseSpeed)
-        transform.position = Vector2.MoveTowards(transform.position, playerScript.transform.position, chaseSpeed * Time.deltaTime);
-
-        // Hitung arah lari menuju player agar senter dan spritenya selalu menghadap player
         Vector2 arahKePlayer = (playerScript.transform.position - transform.position).normalized;
+        Vector2 posisiMengejar = rb.position + arahKePlayer * chaseSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(posisiMengejar);
         AturArahHadap(arahKePlayer);
     }
 
-    // Fungsi pembantu untuk membalik arah sprite dan arah raycast senter
     void AturArahHadap(Vector2 arah) {
+        Vector3 skalaLokal = transform.localScale;
         if (arah.x > 0.05f) {
-            spriteRenderer.flipX = false;    // Hadap kanan
+            skalaLokal.x = Mathf.Abs(skalaLokal.x); 
             arahHadapSenter = Vector2.right; 
         } 
         else if (arah.x < -0.05f) {
-            spriteRenderer.flipX = true;     // Hadap kiri
+            skalaLokal.x = -Mathf.Abs(skalaLokal.x); 
             arahHadapSenter = Vector2.left;  
         }
+        transform.localScale = skalaLokal;
     }
 
     void OnDrawGizmos() {
-        // Mengubah warna garis editor: Merah kalau ngejar, Kuning kalau patroli biasa
         Gizmos.color = (currentGuardState == GuardState.Mengejar) ? Color.red : Color.yellow;
         Vector3 arahGaris = Application.isPlaying ? (Vector3)arahHadapSenter : transform.right;
         Gizmos.DrawRay(transform.position, arahGaris * viewDistance);

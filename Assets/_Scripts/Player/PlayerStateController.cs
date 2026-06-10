@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerStateController : MonoBehaviour
 {
     public enum State { Maling, Patung }
+    [Header("AI State")]
     public State currentStatus = State.Maling;
 
     [Header("Movement Settings")]
@@ -10,118 +11,70 @@ public class PlayerStateController : MonoBehaviour
     public float sprintSpeed = 10f; 
 
     [Header("Sprint & Stamina")]
-    public float stamina = 10f; // Durasi lari maksimal 10 detik
+    public float stamina = 10f; 
     public float maxStamina = 10f;
-    private bool isSprinting = false; // Sekarang dikontrol oleh tombol R
+    private bool isSprinting = false; 
 
     [Header("Visual & Material Settings")]
-    public Material defaultMaterial;   // Seret material standar (Sprite-Lit-Default) ke sini
-    public Material crystalMaterial;   // Seret material kristal/es kamu ke sini
+    public Material defaultMaterial;   
+    public Material crystalMaterial;   
     
     private SpriteRenderer sr;
-    private Animator anim; // Komponen untuk memicu animasi di Unity
+    private Animator anim; 
+    private Rigidbody2D rb; // <--- TAMBAHAN: Untuk mengunci fisik maling
+    private Vector2 pergerakanInput; // Menyimpan data input WASD
 
     void Start() {
         sr = GetComponent<SpriteRenderer>();
-        anim = GetComponent<Animator>(); // Mengambil komponen Animator otomatis saat game mulai
+        anim = GetComponent<Animator>(); 
+        rb = GetComponent<Rigidbody2D>(); // <--- TAMBAHAN: Ambil komponen otomatis
 
-        // Menangkap material default otomatis kalau slotnya kosong
+        // Setting awal Rigidbody2D biar pas jalannya enak dan gak melorot
+        if (rb != null) {
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.gravityScale = 0f; // Biar maling gak jatuh ke bawah layar karena gravitasi
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Biar maling gak guling-guling pas nabrak tembok
+        }
+
         if (defaultMaterial == null && sr != null) {
             defaultMaterial = sr.material;
         }
     }
 
     void Update() {
-        // Input ganti wujud menggunakan tombol E
         if (Input.GetKeyDown(KeyCode.E)) {
             ToggleState();
         }
 
-        // Aktifkan/Matikan lari otomatis menggunakan tombol R (Hanya saat jadi Maling)
         if (currentStatus == State.Maling && Input.GetKeyDown(KeyCode.R)) {
             if (stamina > 0) {
-                SetSprintState(!isSprinting); // Panggil fungsi ganti status lari & animasi
+                SetSprintState(!isSprinting); 
             }
         }
 
-        // Hanya bisa gerak kalau statusnya Maling
+        // Ambil input di Update agar responsif
         if (currentStatus == State.Maling) {
-            HandleMovement();
-        }
-    }
+            float h = Input.GetAxisRaw("Horizontal"); 
+            float v = Input.GetAxisRaw("Vertical");
+            pergerakanInput = new Vector2(h, v).normalized;
 
-    // Mengatur animasi dan material saat tombol R ditekan atau saat stamina habis
-    void SetSprintState(bool sprint) {
-        isSprinting = sprint;
-
-        // Picu parameter isSprinting di Animator Unity
-        if (anim != null) {
-            anim.SetBool("isSprinting", isSprinting);
-        }
-
-        // Logika ganti material kristal secara real-time
-        if (sr != null) {
-            if (isSprinting) {
-                sr.material = crystalMaterial; // Berubah jadi material kristal/es saat lari
-            } else {
-                sr.material = defaultMaterial; // Kembali ke material normal saat diam
+            // Logika Animasi Jalan
+            if (anim != null) {
+                if (pergerakanInput.magnitude > 0 && !isSprinting) {
+                    anim.SetBool("isWalking", true);
+                } else {
+                    anim.SetBool("isWalking", false);
+                }
             }
-        }
-    }
 
-    void ToggleState() {
-        if (currentStatus == State.Maling) {
-            currentStatus = State.Patung;
-            SetSprintState(false); // Otomatis batal lari & balikin material ke normal kalau jadi patung
-            sr.color = Color.gray; 
-
-            // ====================================================================
-            // INTEGRASI UI: Efek layar merah langsung mati otomatis saat jadi patung
-            // ====================================================================
-            if (GameUIManager.Instance != null) {
-                GameUIManager.Instance.SetAlertState(false);
+            // Logika Flip Badan
+            if (sr != null) {
+                if (h > 0) sr.flipX = false;
+                else if (h < 0) sr.flipX = true;
             }
-            // ====================================================================
-
-            Debug.Log("Status: Jadi Patung (Aman dari AI)");
         } else {
-            currentStatus = State.Maling;
-            sr.color = Color.white;
-            Debug.Log("Status: Jadi Maling (Bisa Gerak)");
+            pergerakanInput = Vector2.zero; // Jika jadi patung, kosongkan input jalannya
         }
-    }
-
-    void HandleMovement() {
-        // Mengambil input WASD / Arrow Keys
-        float h = Input.GetAxisRaw("Horizontal"); 
-        float v = Input.GetAxisRaw("Vertical");
-        
-        Vector3 move = new Vector3(h, v, 0).normalized;
-
-        // ====================================================================
-        // INTEGRASI ANIMASI JALAN & FLIP HADAP KANAN/KIRI AUTOMATIS
-        // ====================================================================
-        if (anim != null) {
-            // Jika ada input gerakan, nyalakan animasi jalan biasa
-            if (move.magnitude > 0 && !isSprinting) {
-                anim.SetBool("isWalking", true);
-            } else {
-                anim.SetBool("isWalking", false);
-            }
-        }
-
-        // LOGIKA FLIP BADAN:
-        if (sr != null) {
-            // Jika h > 0 (pencet D / gerak ke kanan), mukanya normal (hadap kanan)
-            if (h > 0) {
-                sr.flipX = false;
-            }
-            // Jika h < 0 (pencet W/A/gerak ke kiri), balik gambarnya biar hadap kiri
-            else if (h < 0) {
-                sr.flipX = true;
-            }
-        }
-        // ====================================================================
 
         // Logika Pengurangan & Pemulihan Stamina
         if (isSprinting) {
@@ -135,14 +88,53 @@ public class PlayerStateController : MonoBehaviour
                 stamina += Time.deltaTime * 0.5f; 
             }
         }
-
         stamina = Mathf.Clamp(stamina, 0, maxStamina);
-        float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
+    }
 
-        if (isSprinting && move.magnitude == 0) {
-            transform.position += Vector3.right * currentSpeed * Time.deltaTime;
+    // PERBAIKAN UTAMA: Pergerakan berbasis fisik ditaruh di FixedUpdate agar mentok dinding abu-abu
+    void FixedUpdate() {
+        if (currentStatus == State.Maling) {
+            float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
+
+            // Jika tombol R lari aktif tapi player lepas keyboard, paksa gerak ke kanan (sesuai logic lamamu)
+            if (isSprinting && pergerakanInput.magnitude == 0) {
+                Vector2 posisiBaru = rb.position + Vector2.right * currentSpeed * Time.fixedDeltaTime;
+                rb.MovePosition(posisiBaru);
+            } else {
+                Vector2 posisiBaru = rb.position + pergerakanInput * currentSpeed * Time.fixedDeltaTime;
+                rb.MovePosition(posisiBaru);
+            }
         } else {
-            transform.position += move * currentSpeed * Time.deltaTime;
+            // Jika jadi patung, kunci posisinya biar gak bisa didorong hansip
+            rb.linearVelocity = Vector2.zero;
+        }
+    }
+
+    void SetSprintState(bool sprint) {
+        isSprinting = sprint;
+        if (anim != null) {
+            anim.SetBool("isSprinting", isSprinting);
+        }
+        if (sr != null) {
+            if (isSprinting) sr.material = crystalMaterial; 
+            else sr.material = defaultMaterial; 
+        }
+    }
+
+    void ToggleState() {
+        if (currentStatus == State.Maling) {
+            currentStatus = State.Patung;
+            SetSprintState(false); 
+            sr.color = Color.gray; 
+
+            if (GameUIManager.Instance != null) {
+                GameUIManager.Instance.SetAlertState(false);
+            }
+            Debug.Log("Status: Jadi Patung (Aman dari AI)");
+        } else {
+            currentStatus = State.Maling;
+            sr.color = Color.white;
+            Debug.Log("Status: Jadi Maling (Bisa Gerak)");
         }
     }
 }

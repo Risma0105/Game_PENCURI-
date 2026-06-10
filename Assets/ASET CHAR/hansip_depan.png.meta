@@ -1,10 +1,25 @@
 fileFormatVersion: 2
-guid: 58790ec0d0973a246a8604230929353e
+guid: abcbf2ce5ce76c84dbaa0ba07ed34c82
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1445040979522211589
-    second: hansip@4x_0
+      213: 5948935467524109498
+    second: hansip_depan_0
+  - first:
+      213: 1638961994645743613
+    second: hansip_depan_1
+  - first:
+      213: 2218948090426106957
+    second: hansip_depan_2
+  - first:
+      213: -7792536664893763244
+    second: hansip_depan_3
+  - first:
+      213: -1830798925056630649
+    second: hansip_depan_4
+  - first:
+      213: 3340564397207223306
+    second: hansip_depan_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -98,34 +113,12 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: hansip@4x_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1201
-        height: 3616
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 50fcd4e5d11dd0410800000000000000
-      internalID: 1445040979522211589
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: bb6d62d2c85c61c4a8e1d20ca2e3ce30
     internalID: 0
     vertices: []
     indices: 
@@ -133,9 +126,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: False
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":1.0},"gridSpriteSize":{"x":256.0,"y":530.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      hansip@4x_0: 1445040979522211589
+      hansip_depan_0: 5948935467524109498
+      hansip_depan_1: 1638961994645743613
+      hansip_depan_2: 2218948090426106957
+      hansip_depan_3: -7792536664893763244
+      hansip_depan_4: -1830798925056630649
+      hansip_depan_5: 3340564397207223306
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
