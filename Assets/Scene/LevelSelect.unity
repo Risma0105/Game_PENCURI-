@@ -408,6 +408,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a212c172cceb604d821026e7cdd573b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::May_LevelSelect
+  btnMap2: {fileID: 501148567}
+  btnMap3: {fileID: 722607358}
 --- !u!4 &597335276
 Transform:
   m_ObjectHideFlags: 0
