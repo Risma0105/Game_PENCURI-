@@ -119,6 +119,7 @@ public class GameUIManager : MonoBehaviour
     #region WIN & SCORING LOGIC
     public void LevelCompleted()
     {
+        Debug.Log("LEVEL COMPLETE DIPANGGIL");
         StopTimer();
         
         // PENGAMAN 1: Nyalakan panel skor jika tidak kosong

@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // WAJIB ditambahkan untuk memanggil New Input System
+using UnityEngine.InputSystem;
 
 public class ItemPickup : MonoBehaviour
 {
@@ -7,24 +7,22 @@ public class ItemPickup : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        // Mengecek apakah yang menyentuh adalah "Player" 
-        // DAN mengecek apakah tombol Space ditekan menggunakan New Input System
-        if (other.CompareTag("Player") && Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (other.CompareTag("Player") &&
+            Keyboard.current != null &&
+            Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             if (dataLukisan != null)
             {
-                // 1. Masukkan barang ke Inventory Humayra
                 InventoryManager.Instance.TambahKeInventory(dataLukisan);
-                Debug.Log("Berhasil mencuri: " + dataLukisan.namaLukisan);
+
+                Debug.Log("Berhasil mencuri: " +
+                          dataLukisan.namaLukisan);
             }
 
-            // 2. KODE GABUNGAN: Panggil UIManager milik Risma untuk memunculkan panel bintang
-            if (GameUIManager.Instance != null)
-            {
-                GameUIManager.Instance.LevelCompleted();
-            }
+            GameState.objectiveCollected = true;
 
-            // 3. Hancurkan barang dari scene
+            Debug.Log("Objective berhasil dicuri!");
+
             Destroy(gameObject);
         }
     }
