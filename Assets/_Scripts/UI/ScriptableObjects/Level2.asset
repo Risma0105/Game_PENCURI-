@@ -16,5 +16,5 @@ MonoBehaviour:
   timer: 45
   enemyCount: 2
   objectiveItem: Patung
-  requiresKey: 0
-  requiresDoor: 0
+  requiresKey: 1
+  requiresDoor: 1

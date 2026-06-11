@@ -17,4 +17,4 @@ MonoBehaviour:
   enemyCount: 1
   objectiveItem: Lukisan
   requiresKey: 0
-  requiresDoor: 0
+  requiresDoor: 1
