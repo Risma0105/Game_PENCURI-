@@ -9,7 +9,6 @@ public class May_LevelSelect : MonoBehaviour
 
     private void Start()
     {
-      
         int unlockedLevel =
             PlayerPrefs.GetInt("UnlockedLevel", 1);
 
@@ -23,28 +22,28 @@ public class May_LevelSelect : MonoBehaviour
     public void Level1()
     {
         PlayerPrefs.SetInt("CurrentLevel", 1);
-        SceneManager.LoadScene("loadingScene");
+        SceneManager.LoadScene("LoadingScene");
     }
 
     public void Level2()
     {
         PlayerPrefs.SetInt("CurrentLevel", 2);
-        SceneManager.LoadScene("loadingScene");
+        SceneManager.LoadScene("LoadingScene");
     }
 
     public void Level3()
     {
         PlayerPrefs.SetInt("CurrentLevel", 3);
-        SceneManager.LoadScene("loadingScene");
+        SceneManager.LoadScene("LoadingScene");
     }
 
     public void ResetProgress()
-{
-    PlayerPrefs.DeleteAll();
+    {
+        PlayerPrefs.DeleteAll();
 
-    btnMap2.interactable = false;
-    btnMap3.interactable = false;
+        btnMap2.interactable = false;
+        btnMap3.interactable = false;
 
-    Debug.Log("Progress berhasil direset!");
-}
+        Debug.Log("Progress berhasil direset!");
+    }
 }

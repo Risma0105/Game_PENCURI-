@@ -13,66 +13,109 @@ public class May_GameManager : MonoBehaviour
     private GameObject lukisan;
 
     [SerializeField]
+    private GameObject patung;
+
+    [SerializeField]
+    private GameObject berlian;
+
+    [SerializeField]
     private GameObject keyObject;
 
     [SerializeField]
     private GameObject finishDoor;
 
+    [Header("Level Maps")]
     [SerializeField]
-private GameObject patung;
+    private GameObject[] allMaps;
 
-[SerializeField]
-private GameObject berlian;
+    [Header("Testing")]
+    [SerializeField]
+    private bool testingMode;
 
-    void Start()
+    [SerializeField]
+    private int testingLevel = 1;
+
+    private void Start()
     {
-        int selectedLevel =
-            PlayerPrefs.GetInt("CurrentLevel", 1);
+        int selectedLevel;
 
-        currentLevel =
-            levels[selectedLevel - 1];
+        if (testingMode)
+        {
+            selectedLevel = testingLevel;
+        }
+        else
+        {
+            selectedLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+        }
 
-        LoadLevel(currentLevel);
+        // Pengaman supaya tidak error
+        selectedLevel = Mathf.Clamp(selectedLevel, 1, levels.Length);
+
+        currentLevel = levels[selectedLevel - 1];
+
+        LoadLevel(currentLevel, selectedLevel);
     }
 
-    void LoadLevel(LevelData levelData)
-{
-    Debug.Log("Level Name: " +
-        levelData.levelName);
-
-    // Reset semua object
-    lukisan.SetActive(false);
-    patung.SetActive(false);
-    berlian.SetActive(false);
-    keyObject.SetActive(false);
-
-    // Semua level punya pintu keluar
-    finishDoor.SetActive(true);
-
-    // Objective Item
-    if (levelData.objectiveItem == "Lukisan")
+    private void LoadLevel(LevelData levelData, int selectedLevel)
     {
-        lukisan.SetActive(true);
-    }
-    else if (levelData.objectiveItem == "Patung")
-    {
-        patung.SetActive(true);
-    }
-    else if (levelData.objectiveItem == "Berlian")
-    {
-        berlian.SetActive(true);
-    }
+        // =========================
+        // MAP SYSTEM
+        // =========================
 
-    // Sistem kunci
-    if (levelData.requiresKey)
-    {
-        keyObject.SetActive(true);
+        foreach (GameObject map in allMaps)
+        {
+            if (map != null)
+            {
+                map.SetActive(false);
+            }
+        }
 
-        Debug.Log("Door is LOCKED");
+        if (selectedLevel - 1 < allMaps.Length)
+        {
+            allMaps[selectedLevel - 1].SetActive(true);
+        }
+
+        Debug.Log("Loading Level: " + levelData.levelName);
+
+        // =========================
+        // OBJECTIVE SYSTEM
+        // =========================
+
+        lukisan.SetActive(false);
+        patung.SetActive(false);
+        berlian.SetActive(false);
+        keyObject.SetActive(false);
+
+        finishDoor.SetActive(true);
+
+        switch (levelData.objectiveItem)
+        {
+            case "Lukisan":
+                lukisan.SetActive(true);
+                break;
+
+            case "Patung":
+                patung.SetActive(true);
+                break;
+
+            case "Berlian":
+                berlian.SetActive(true);
+                break;
+        }
+
+        // =========================
+        // KEY SYSTEM
+        // =========================
+
+        if (levelData.requiresKey)
+        {
+            keyObject.SetActive(true);
+
+            Debug.Log("Door is LOCKED");
+        }
+        else
+        {
+            Debug.Log("Door is OPEN");
+        }
     }
-    else
-    {
-        Debug.Log("Door is OPEN");
-    }
-}
 }
