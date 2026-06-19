@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8cdae37363cee0044a104d03bff90e7b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - sourcePatroli: {instanceID: 0}
+  - sourceTegang: {instanceID: 0}
+  - musikPatroli: {fileID: 8300000, guid: d58b4eb14915e8d4d9545f13cd8d7cd1, type: 3}
+  - musikTegang: {fileID: 8300000, guid: c313d6ba85e403a418c8279c5e713120, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

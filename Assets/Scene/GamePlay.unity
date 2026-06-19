@@ -6488,6 +6488,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &576434164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 576434166}
+  - component: {fileID: 576434165}
+  m_Layer: 0
+  m_Name: BGMManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &576434165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 576434164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cdae37363cee0044a104d03bff90e7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BGMManager
+  sourcePatroli: {fileID: 0}
+  sourceTegang: {fileID: 0}
+  musikPatroli: {fileID: 8300000, guid: c313d6ba85e403a418c8279c5e713120, type: 3}
+  musikTegang: {fileID: 0}
+  fadeSpeed: 2
+--- !u!4 &576434166
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 576434164}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.20038, y: -1.51883, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &577771025
 GameObject:
   m_ObjectHideFlags: 0
@@ -21286,6 +21335,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6076126091978494335, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
+      propertyPath: crystalMaterial
+      value: 
+      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 6076126091978494335, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
+      propertyPath: defaultMaterial
+      value: 
+      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21296,6 +21353,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4710988099450425920, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8866403288282657010}
+    - targetCorrespondingSourceObject: {fileID: 4710988099450425920, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8866403288282657011}
   m_SourcePrefab: {fileID: 100100000, guid: f85a48ff79f7f8b449ac27dfd39eeb44, type: 3}
 --- !u!4 &6786090611989848580 stripped
 Transform:
@@ -21370,6 +21430,36 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8866403288282657011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638736436169572981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -21393,3 +21483,4 @@ SceneRoots:
   - {fileID: 358254975}
   - {fileID: 1881764093}
   - {fileID: 183730744}
+  - {fileID: 576434166}
